@@ -1,36 +1,62 @@
+import re
+
 level_1 = [
     ["What is 1+1?", "2", "TWO"],
     ["How many colors does a rainbow have?", "7", "SEVEN"],
     ["How many meters are in a kilometer?", "1000", "THOUSAND"],
-    ["Which is the smallest month of the year?", "FEBRUARY", "FEBRUARY"],
-    ["What animal is known as the king of the jungle?", "LION", "LION"],
-]
-level_2 = [
-    {
-        "question": "What is the only letter that doesn’t appear in any U.S. state name?",
-        "answer": "The letter 'Q' is the only letter not found in any U.S. state name.",
-    },
-    {
-        "question": "What is the shortest war in history?",
-        "answer": "The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.",
-    },
-    {
-        "question": "How many hearts does an octopus have?",
-        "answer": "An octopus has three hearts: two pump blood to the gills, while the third pumps it to the rest of the body.",
-    },
-    {
-        "question": "What’s the world’s longest place name?",
-        "answer": "The longest place name in the world is Taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu, a hill in New Zealand.",
-    },
-    {
-        "question": "Which animal can sleep for up to three years?",
-        "answer": "Snails can hibernate and sleep for up to three years if the weather conditions aren’t favorable.",
-    },
+    ["Which is the smallest month of the year?", "FEBRUARY"],
+    ["What animal is known as the king of the jungle?", "LION"],
+    [
+        "What are the three primary colors of light?",
+        "REDGREENBLUE",
+        "REDBLUEGREEN",
+        "BLUEREDGREEN",
+        "BLUEGREENRED",
+        "GREENREDBLUE",
+        "GREENBLUERED",
+    ],
 ]
 
+level_2 = [["What is 3*5", "15", "FIFTEEN"]]
 
-def present_question(level, number):
-    """Asks the user a question from the level selected. Currently supports one level selection.
+level_3 = [["What is the capital of Albania?", "TIRANA"]]
+
+
+def display_levels(levels):
+    """
+        get list of levels
+        then prints a list of available levels.
+    Args:
+        levels (_type_):
+    returns:
+        nothing.
+    """
+    for i, level in enumerate(levels):
+        print(f"{i + 1 }. {level}")
+
+
+def get_level(levels):
+    """
+    ask the user to pick the level
+    user picks a number
+
+    returns:
+        selected level -> str
+    """
+    while True:
+        try:
+            choice = int(input("Select level ")) - 1
+            for i in range(len(levels)):
+                if levels[choice] == levels[i]:
+                    print(f"you have selected {levels[choice].replace('_', ' ')}")
+                    return levels[i]
+
+        except (ValueError, IndexError):
+            pass
+
+
+def present_question(level: list, number: int) -> str:
+    """Asks the user a question from the level selected.
 
     Parameters
     ----------
@@ -52,8 +78,8 @@ def present_question(level, number):
 def check_answer(level, answer, number, correct):
     """Checks the user's answer and compares it to the correct one. Currently supports one level selection.
 
-    Turns the user's answer to capital letters to match the answer list. Try block prevents any errors from stopping the code.
-    Answer gets compared to both numerical and text based answer in case the answer should support both. As long as one of the
+    Turns the user's answer to capital letters to match the answer list. Removes 'and' and other special characters from answer.
+    Try block prevents any errors from stopping the code. Answer gets compared to the answers in list. As long as one of the
     correct answers is detected, the answer will be marked as correct. If a wrong or an error causing answer is submitted by
     the user, the answer will be marked incorrect.
 
@@ -75,6 +101,8 @@ def check_answer(level, answer, number, correct):
     """
 
     answer = answer.upper()
+    answer = answer.replace(" AND ", "")
+    answer = re.sub(r"[^a-zA-Z0-9]", "", answer)
     try:
         if answer == level[number - 1][1] or answer == level[number - 1][2]:
             print(f"Good job!\nCorrect amount of answers: {correct+1}")
@@ -96,7 +124,10 @@ def main():
     and check for the correct answers. The amount of correct answers gets printed to the user at the
     end of the game.
     """
-
+    levels = levels = ["level_1", "level_2", "level_3"]
+    display_levels(levels)
+    level = get_level(levels)
+    print(level)
     correct = 0
     number = 1
     questions = len(level_1)
